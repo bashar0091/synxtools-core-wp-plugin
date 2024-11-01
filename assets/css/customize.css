@@ -1,0 +1,26 @@
+:root {
+    --color1 : #335F5E;
+    --color2 : #AAAAAA;
+    --color3 : #F4F4F4;
+}
+
+.form_title_v1 {
+    font-size: 30px;
+    line-height: 28.2px;
+    font-weight: 700;
+    color: var(--color1);
+}
+.register_form_group .register_input_item {
+    margin-bottom: 10px;
+}
+.register_form_group .register_input_item:last-child {
+    margin-bottom: 0;
+}
+.register_form_group input, 
+.register_form_group select {
+    background: var(--color3);
+    border: 1px solid var(--color2);
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--color2);
+}
