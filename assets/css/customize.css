@@ -2,6 +2,9 @@
     --color1 : #335F5E;
     --color2 : #AAAAAA;
     --color3 : #F4F4F4;
+    --color4 : #D50000;
+    --color5: #98AD46;
+    --white: #fff;
 }
 
 .form_title_v1 {
@@ -9,6 +12,7 @@
     line-height: 28.2px;
     font-weight: 700;
     color: var(--color1);
+    margin-bottom: 25px;
 }
 .register_form_group .register_input_item {
     margin-bottom: 10px;
@@ -18,9 +22,96 @@
 }
 .register_form_group input, 
 .register_form_group select {
-    background: var(--color3);
-    border: 1px solid var(--color2);
+    background: var(--color3) !important;
+    border: 1px solid var(--color2) !important;
+    font-size: 16px !important;
+    font-weight: 500;
+    color: var(--color2) !important;
+}
+.mt_50 {
+    margin-top: 50px;
+}
+.r_input_wrapper {
+    display: block;
+    position: relative;
+}
+.r_input_wrapper b {
+    color: var(--color4);
+    position: absolute;
+    top: 50%;
+    left: 100%;
+    transform: translateY(-50%);
+    margin-left: 5px;
+}
+.r_input_wrapper img {
+    position: absolute;
+    width: 25px;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 10px;
+}
+.register_input_item_v1 {
+    display: grid;
+    grid-template-columns: 1fr 0.3fr;
+    gap: 35px;
+}
+.register_input_item_v2 {
+    display: grid;
+    grid-template-columns: 0.3fr 1fr;
+    gap: 35px;
+}
+.register_input_item_v3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 35px;
+}
+.register_input_item_v4 .r_input_wrapper {
+    display: flex;
+    gap: 25px;
+}
+.register_input_item_v4 .r_input_wrapper label {
+    font-weight: 700;
+    color: var(--color1);
+}
+.register_input_item_v4 .r_input_wrapper input {
+    margin-right: 0;
+}
+.register_submit_btn_v1 {
+    background: var(--color5) !important;
+    border-radius: 4px !important;
+    color: var(--white) !important;
+    font-size: 18px !important;
+}
+.upload_doc_title {
     font-size: 16px;
     font-weight: 700;
-    color: var(--color2);
+    color: var(--color1);
+    margin-bottom: 5px;
+}
+.register_input_item_v5 .r_input_wrapper b {
+    position: static;
+    margin: 0;
+}
+.register_input_item_v5 .r_input_wrapper label {
+    text-decoration: underline;
+    color: var(--color1);
+    font-weight: 400;
+}
+.register_input_item_v5 .r_input_wrapper label input {
+    width: 0;
+    opacity: 0;
+    position: absolute;
+}
+.register_input_item_v6 label {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--color1);
+}
+.file_name_display {
+    border: 1px solid;
+    padding: 10px;
+    display: inline-block;
+    border-radius: 100px;
+    margin-bottom: 0;
+    margin-left: 10px;
 }
