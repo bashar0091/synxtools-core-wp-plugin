@@ -6,20 +6,25 @@
     $(document).on("submit", ".register_form_on_submit", function (e) {
       e.preventDefault();
       var t = $(this);
-      var register_data = t.serialize();
+      var register_data = t.serialize(); // Serialize form data
       $(".response_text").text("Processing...");
+
+      var formData = new FormData(this); // Create FormData object to include file upload
+      formData.append("action", "registration_ajax");
+      formData.append("register_data", register_data); // Append serialized data
+      formData.append("register_form_nonce", $("#register_form_nonce").val()); // Append nonce
+
       $.ajax({
         type: "POST",
         url: dataAjax.ajaxurl,
-        data: {
-          action: "registration_ajax",
-          register_data: register_data,
-          register_form_nonce: $("#register_form_nonce").val(),
-        },
+        data: formData,
+        processData: false, // Prevent jQuery from processing the data
+        contentType: false, // Prevent jQuery from overriding content type
         success: function (response) {
+          console.log(response);
           if (response.success) {
             $(".response_text").text(
-              response.data.message + " Redirecting to Homepage..."
+              response.data.message + " Redirecting to Login Page..."
             );
             window.location.href = dataAjax.homeurl;
           } else {
@@ -41,6 +46,15 @@
               $(".email_error_show").after(
                 '<div class="error-message">' +
                   response.data.email_error +
+                  "</div>"
+              );
+            }
+
+            // Handle upload errors
+            if (response.data.upload_error) {
+              $(".upload_error_show").after(
+                '<div class="error-message">' +
+                  response.data.upload_error +
                   "</div>"
               );
             }

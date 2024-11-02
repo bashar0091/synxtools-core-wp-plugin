@@ -52,7 +52,7 @@ jQuery(document).ready(function ($) {
           $link
             .closest("td")
             .html(
-              `<span style="color:${newColor};">${statusText}</span> | <a href="#" class="toggle-approval" data-user-id="${userId}" data-approval="${newApproval}">${newActionText}</a>`
+              `<span style="color:${newColor};">${statusText}</span> | <a href="javascript:void(0)" class="toggle-approval" data-user-id="${userId}" data-approval="${newApproval}">${newActionText}</a>`
             );
         } else {
           alert("Failed to update approval status.");

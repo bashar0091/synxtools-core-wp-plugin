@@ -113,16 +113,34 @@ function redirect_register_page()
 }
 add_action('template_redirect', 'redirect_register_page');
 
-// Block login for unapproved users
-function restrict_unapproved_login($user, $username, $password)
+// Function to redirect unapproved users after login failure
+function redirect_unapproved_user()
 {
-    $user_id = $user ? $user->ID : 0;
-    if ($user_id && get_user_meta($user_id, 'is_approved', true) != 1) {
-        return new WP_Error('not_approved', 'Your account is awaiting approval.');
+    if (is_user_logged_in() && !current_user_can('administrator')) {
+        $user_id = get_current_user_id();
+        $is_approved = get_user_meta($user_id, 'is_approved', true);
+        if ($is_approved == 0) {
+            wp_logout();
+            // Store the error message in a global variable
+            global $unapproved_user_message;
+            $unapproved_user_message = 'Error: Your Account is not approved, Please contact with site admin.';
+        }
     }
-    return $user;
 }
-add_filter('wp_authenticate_user', 'restrict_unapproved_login', 10, 3);
+add_action('init', 'redirect_unapproved_user');
+
+// Display error message before the login form
+function display_unapproved_user_message()
+{
+    global $unapproved_user_message;
+
+    if (isset($unapproved_user_message)) {
+        echo '<div class="woocommerce-error">' . esc_html($unapproved_user_message) . '</div>';
+        // Clear the message after displaying it
+        unset($unapproved_user_message);
+    }
+}
+add_action('woocommerce_login_form_start', 'display_unapproved_user_message');
 
 // Add a new column to the Users table
 function add_approval_column($columns)
@@ -145,9 +163,9 @@ function show_approval_column($value, $column_name, $user_id)
 
         $is_approved = get_user_meta($user_id, 'is_approved', true);
         if ($is_approved) {
-            return '<span style="color:green;">Approved</span> | <a href="#" class="toggle-approval" data-user-id="' . $user_id . '" data-approval="0">Disapprove</a>';
+            return '<span style="color:green;">Approved</span> | <a href="javascript:void(0)" class="toggle-approval" data-user-id="' . $user_id . '" data-approval="0">Disapprove</a>';
         } else {
-            return '<span style="color:red;">Pending</span> | <a href="#" class="toggle-approval" data-user-id="' . $user_id . '" data-approval="1">Approve</a>';
+            return '<span style="color:red;">Pending</span> | <a href="javascript:void(0)" class="toggle-approval" data-user-id="' . $user_id . '" data-approval="1">Approve</a>';
         }
     }
     return $value;
@@ -171,15 +189,6 @@ function toggle_user_approval()
 
     // Update the user's approval status
     update_user_meta($user_id, 'is_approved', $approval_status);
-
-    if ($approval_status == 1) {
-        $user = get_userdata($user_id);
-        wp_mail(
-            $user->user_email,
-            'Your account has been approved',
-            'Congratulations! Your account has been approved. You can now log in.'
-        );
-    }
 
     wp_send_json_success(['status' => $approval_status ? 'Approved' : 'Pending']);
 }

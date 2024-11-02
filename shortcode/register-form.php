@@ -10,7 +10,7 @@ function register_form_shortcode()
    ob_start();
 ?>
    <div class="register_form_wrapper">
-      <form action="#!" method="post" class="register_form_on_submit">
+      <form action="#!" method="post" class="register_form_on_submit" enctype="multipart/form-data">
          <div>
             <?php title_v1('Bedrijfsgegevens'); ?>
             <div class="register_form_group">

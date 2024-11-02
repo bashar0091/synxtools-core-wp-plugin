@@ -35,7 +35,7 @@ function syntools_enqueue_scripts()
     // dynamic data to js 
     wp_localize_script('customize-script', 'dataAjax', array(
         'ajaxurl' => admin_url('admin-ajax.php'),
-        'homeurl' => home_url(),
+        'homeurl' => home_url('/my-account'),
     ));
 }
 add_action('wp_enqueue_scripts', 'syntools_enqueue_scripts');
