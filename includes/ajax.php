@@ -62,7 +62,7 @@ function registration_ajax()
                 // Check password strength
                 $has_upper = preg_match('/[A-Z]/', $password);
                 $has_lower = preg_match('/[a-z]/', $password);
-                $has_number = preg_match('/[0-9]/', $password); // Fixed special character check
+                $has_number = preg_match('/[0-9]/', $password);
 
                 if (strlen($password) < 8 || !$has_upper || !$has_lower || !$has_number) {
                     wp_send_json_error(['password_error' => 'Password must be at least 8 characters long and include uppercase letters, lowercase letters, and numbers.']);
@@ -72,6 +72,13 @@ function registration_ajax()
                     if (is_wp_error($user_id)) {
                         wp_send_json_success(['message' => $user_id->get_error_message()]);
                     } else {
+                        // Set user role to 'customer' and mark as pending
+                        $user = new WP_User($user_id);
+                        $user->set_role('customer');
+
+                        // Set user as pending approval
+                        update_user_meta($user_id, 'is_approved', 0); // 0 = pending, 1 = approved
+
                         // Update user first and last names
                         wp_update_user([
                             'ID' => $user_id,
@@ -85,7 +92,15 @@ function registration_ajax()
                                 update_user_meta($user_id, $field, $$field);
                             }
                         }
-                        wp_send_json_success(['message' => 'Registration successful!']);
+
+                        // Notify admin for approval
+                        wp_mail(
+                            get_option('admin_email'),
+                            'New User Registration Pending Approval',
+                            "A new user has registered and is awaiting approval.\n\nUsername: $username\nEmail: $contact_email\n\nPlease approve or reject the user in the WordPress admin."
+                        );
+
+                        wp_send_json_success(['message' => 'Registration successful! Your account is pending approval by the admin.']);
                     }
                 }
             }
