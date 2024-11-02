@@ -65,6 +65,11 @@
     grid-template-columns: 1fr 1fr 1fr;
     gap: 35px;
 }
+.register_input_item_v7 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 35px;
+}
 .register_input_item_v4 .r_input_wrapper {
     display: flex;
     gap: 25px;
@@ -114,4 +119,12 @@
     border-radius: 100px;
     margin-bottom: 0;
     margin-left: 10px;
+}
+.register_form_group .error-message {
+    color: var(--color4);
+    margin: 8px 0;
+}
+.response_text {
+    margin-top: 5px;
+    color: var(--color1);
 }

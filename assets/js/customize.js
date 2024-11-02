@@ -7,6 +7,7 @@
       e.preventDefault();
       var t = $(this);
       var register_data = t.serialize();
+      $(".response_text").text("Processing...");
       $.ajax({
         type: "POST",
         url: dataAjax.ajaxurl,
@@ -16,7 +17,42 @@
           register_form_nonce: $("#register_form_nonce").val(),
         },
         success: function (response) {
-          console.log(response);
+          if (response.success) {
+            $(".response_text").text(
+              response.data.message + " Redirecting to Homepage..."
+            );
+            window.location.href = dataAjax.homeurl;
+          } else {
+            // Clear previous error messages
+            $(".response_text").text("");
+            $(".error-message").remove();
+
+            // Handle password errors
+            if (response.data.password_error) {
+              $(".password_error_show").after(
+                '<div class="error-message">' +
+                  response.data.password_error +
+                  "</div>"
+              );
+            }
+
+            // Handle email errors
+            if (response.data.email_error) {
+              $(".email_error_show").after(
+                '<div class="error-message">' +
+                  response.data.email_error +
+                  "</div>"
+              );
+            }
+
+            // Jump to the error section
+            $("html, body").animate(
+              {
+                scrollTop: $(".jump_section").first().offset().top, // Scroll to the first error message
+              },
+              100
+            ); // Duration in milliseconds
+          }
         },
         error: function (error) {
           console.log(error);
