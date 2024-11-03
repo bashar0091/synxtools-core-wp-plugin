@@ -208,3 +208,38 @@ function enqueue_user_approval_script($hook)
     ]);
 }
 add_action('admin_enqueue_scripts', 'enqueue_user_approval_script');
+
+
+// redirect to woocommerce default register page to own register page 
+function woo_default_register_to_redirect()
+{
+    if (is_page('my-account') && isset($_GET['action']) && $_GET['action'] == 'register') {
+        wp_redirect(home_url('/registrenen'));
+        exit;
+    }
+}
+add_action('template_redirect', 'woo_default_register_to_redirect');
+
+
+// get woocommerce all product discount for specific user 
+add_filter('woocommerce_product_get_price', 'apply_global_discount_for_logged_in_user', 10, 2);
+add_filter('woocommerce_product_get_regular_price', 'apply_global_discount_for_logged_in_user', 10, 2);
+add_filter('woocommerce_variation_get_price', 'apply_global_discount_for_logged_in_user', 10, 2);
+add_filter('woocommerce_variation_get_regular_price', 'apply_global_discount_for_logged_in_user', 10, 2);
+
+function apply_global_discount_for_logged_in_user($price, $product)
+{
+    if (is_user_logged_in()) {
+        $user_id = get_current_user_id();
+        $discount_percentage = (float) get_user_meta($user_id, 'discount_percentage', true); // Ensure percentage is numeric
+
+        // Apply discount only if a valid discount percentage is set
+        if ($discount_percentage > 0) {
+            $discount = ($price * $discount_percentage) / 100;
+            $discounted_price = $price - $discount;
+            return $discounted_price;
+        }
+    }
+
+    return $price;
+}
